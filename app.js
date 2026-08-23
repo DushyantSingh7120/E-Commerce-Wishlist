@@ -20,8 +20,35 @@ let allProducts = [];
 let wishlist = JSON.parse(localStorage.getItem('wishlist') || '[]');
 
 // ─── DOM Refs ─────────────────────────────────────────────────────────────────
-const productGrid = document.getElementById('product-grid');
-const tabButtons  = document.querySelectorAll('.tab-btn');
+const productGrid  = document.getElementById('product-grid');
+const tabButtons   = document.querySelectorAll('.tab-btn');
+const themeToggle  = document.getElementById('theme-toggle');
+
+// ─── Theme Toggle ─────────────────────────────────────────────────────────────
+themeToggle.addEventListener('click', () => {
+    const current = document.documentElement.getAttribute('data-theme');
+    const next    = current === 'light' ? 'dark' : 'light';
+    document.documentElement.setAttribute('data-theme', next);
+    localStorage.setItem('theme', next);
+});
+
+// ─── Toast Notifications ──────────────────────────────────────────────────────
+const toastContainer = document.createElement('div');
+toastContainer.className = 'toast-container';
+document.body.appendChild(toastContainer);
+
+function showToast(message, icon = '✓') {
+    const toast = document.createElement('div');
+    toast.className = 'toast';
+    toast.innerHTML = `<span class="toast-icon">${icon}</span><span>${message}</span>`;
+    toastContainer.appendChild(toast);
+
+    const dismiss = () => {
+        toast.classList.add('toast-exit');
+        toast.addEventListener('animationend', () => toast.remove(), { once: true });
+    };
+    setTimeout(dismiss, 2000);
+}
 
 // ─── Tab Switching ─────────────────────────────────────────────────────────────
 function setActiveTab(tabName) {
@@ -44,46 +71,53 @@ function isWishlisted(id) {
     return wishlist.includes(id);
 }
 
-async function toggleWishlist(productOrId) {
-    const product = typeof productOrId === 'object'
-        ? productOrId
-        : allProducts.find(p => p.id === productOrId);
+async function toggleWishlist(product, btn) {
+    // Heart pop — restarts animation even if clicked rapidly
+    if (btn) {
+        btn.classList.remove('pop');
+        void btn.offsetWidth; // force reflow to restart animation
+        btn.classList.add('pop');
+        btn.addEventListener('animationend', () => btn.classList.remove('pop'), { once: true });
+    }
 
     if (!product) return;
 
     const productId = product.id;
-    const docId = `${deviceId}_${productId}`;
-    const docRef = doc(db, 'wishlists', docId);
+    const docId     = `${deviceId}_${productId}`;
+    const docRef    = doc(db, 'wishlists', docId);
+    const removing  = isWishlisted(productId);
 
-    if (isWishlisted(productId)) {
+    if (removing) {
         wishlist = wishlist.filter(w => w !== productId);
         localStorage.setItem('wishlist', JSON.stringify(wishlist));
-
-        try {
-            await deleteDoc(docRef);
-        } catch (err) {
-            console.error('Error deleting from Firestore:', err);
-        }
+        showToast('Removed from wishlist', '🤍');
+        try { await deleteDoc(docRef); }
+        catch (err) { console.error('Firestore delete error:', err); }
     } else {
         wishlist.push(productId);
         localStorage.setItem('wishlist', JSON.stringify(wishlist));
-
+        showToast('Added to wishlist', '❤️');
         try {
             await setDoc(docRef, {
-                deviceId: deviceId,
-                productId: productId,
-                title: product.title,
-                price: product.price,
-                image: product.image,
+                deviceId, productId,
+                title: product.title, price: product.price, image: product.image,
                 timestamp: serverTimestamp()
             });
-        } catch (err) {
-            console.error('Error saving to Firestore:', err);
+        } catch (err) { console.error('Firestore write error:', err); }
+    }
+
+    const activeTab = document.querySelector('.tab-btn.active')?.dataset.tab;
+
+    // Wishlist tab + removing: animate card out, then re-render
+    if (removing && activeTab === 'wishlist' && btn) {
+        const card = btn.closest('.product-card');
+        if (card) {
+            card.classList.add('card-removing');
+            card.addEventListener('animationend', () => renderWishlist(), { once: true });
+            return;
         }
     }
 
-    // Refresh the current view to show updated heart icon state
-    const activeTab = document.querySelector('.tab-btn.active')?.dataset.tab;
     if (activeTab === 'products') renderProducts();
     else renderWishlist();
 }
@@ -116,7 +150,9 @@ function buildCard(product) {
             </div>
         </div>
     `;
-    card.querySelector('.wishlist-btn').addEventListener('click', () => toggleWishlist(product));
+    card.querySelector('.wishlist-btn').addEventListener('click', (e) => {
+        toggleWishlist(product, e.currentTarget);
+    });
     return card;
 }
 
