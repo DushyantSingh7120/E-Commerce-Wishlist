@@ -1,0 +1,88 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 630" width="1200" height="630">
+  <defs>
+    <!-- Gradients -->
+    <linearGradient id="bgGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#0b0f19" />
+      <stop offset="50%" stop-color="#0f172a" />
+      <stop offset="100%" stop-color="#1e1b4b" />
+    </linearGradient>
+    
+    <linearGradient id="primaryGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#a5b4fc" />
+      <stop offset="50%" stop-color="#6366f1" />
+      <stop offset="100%" stop-color="#4338ca" />
+    </linearGradient>
+    
+    <linearGradient id="textGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#ffffff" />
+      <stop offset="100%" stop-color="#cbd5e1" />
+    </linearGradient>
+
+    <radialGradient id="radialGlow" cx="50%" cy="40%" r="50%">
+      <stop offset="0%" stop-color="#6366f1" stop-opacity="0.25" />
+      <stop offset="100%" stop-color="#0f172a" stop-opacity="0" />
+    </radialGradient>
+    
+    <filter id="dropGlow" x="-20%" y="-20%" width="140%" height="140%">
+      <feDropShadow dx="0" dy="8" stdDeviation="16" flood-color="#6366f1" flood-opacity="0.4" />
+    </filter>
+  </defs>
+
+  <style>
+    .title { font-family: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif; font-weight: 800; font-size: 64px; fill: url(#textGrad); letter-spacing: -0.03em; }
+    .tagline { font-family: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif; font-weight: 500; font-size: 26px; fill: #94a3b8; }
+    .badge-text { font-family: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif; font-weight: 600; font-size: 16px; fill: #c7d2fe; }
+    .url-text { font-family: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif; font-weight: 600; font-size: 18px; fill: #64748b; }
+  </style>
+
+  <!-- Background Canvas -->
+  <rect width="1200" height="630" fill="url(#bgGrad)" />
+  <rect width="1200" height="630" fill="url(#radialGlow)" />
+
+  <!-- Subtle Outer Border -->
+  <rect x="20" y="20" width="1160" height="590" rx="24" fill="none" stroke="rgba(255, 255, 255, 0.08)" stroke-width="2" />
+
+  <!-- Center Card / Floating Container -->
+  <g transform="translate(600, 315)">
+    <!-- Decorative Ambient Circle Behind Icon -->
+    <circle cx="0" cy="-90" r="70" fill="#6366f1" opacity="0.15" />
+    
+    <!-- Brand Icon Container -->
+    <rect x="-48" y="-138" width="96" height="96" rx="24" fill="#1e293b" stroke="rgba(99, 102, 241, 0.4)" stroke-width="2" filter="url(#dropGlow)" />
+    
+    <!-- Heart Icon -->
+    <g transform="translate(-24, -114)">
+      <path fill="url(#primaryGrad)" d="M24 42.7l-2.9-2.64C10.8 30.72 4 24.56 4 17 4 10.84 8.84 6 15 6c3.48 0 6.82 1.62 9 4.18C26.18 7.62 29.52 6 33 6c6.16 0 11 4.84 11 11 0 7.56-6.8 13.72-17.1 23.08L24 42.7z"/>
+    </g>
+
+    <!-- App Title -->
+    <text x="0" y="10" text-anchor="middle" class="title">WishCart</text>
+
+    <!-- Tagline -->
+    <text x="0" y="58" text-anchor="middle" class="tagline">Save what you love — Persistent E-Commerce Wishlist</text>
+
+    <!-- Feature Pills -->
+    <g transform="translate(0, 110)">
+      <!-- Pill 1: Firebase Sync -->
+      <g transform="translate(-210, 0)">
+        <rect x="-80" y="-18" width="160" height="36" rx="18" fill="rgba(99, 102, 241, 0.15)" stroke="rgba(99, 102, 241, 0.3)" stroke-width="1.5" />
+        <text x="0" y="6" text-anchor="middle" class="badge-text">⚡ Firebase Sync</text>
+      </g>
+
+      <!-- Pill 2: Real-time Saves -->
+      <g transform="translate(0, 0)">
+        <rect x="-85" y="-18" width="170" height="36" rx="18" fill="rgba(99, 102, 241, 0.15)" stroke="rgba(99, 102, 241, 0.3)" stroke-width="1.5" />
+        <text x="0" y="6" text-anchor="middle" class="badge-text">💖 Real-time Saves</text>
+      </g>
+
+      <!-- Pill 3: Instant Filter -->
+      <g transform="translate(210, 0)">
+        <rect x="-80" y="-18" width="160" height="36" rx="18" fill="rgba(99, 102, 241, 0.15)" stroke="rgba(99, 102, 241, 0.3)" stroke-width="1.5" />
+        <text x="0" y="6" text-anchor="middle" class="badge-text">🔍 Instant Filter</text>
+      </g>
+    </g>
+
+    <!-- Domain Footer -->
+    <text x="0" y="210" text-anchor="middle" class="url-text">e-commerce-wishlist.vercel.app</text>
+  </g>
+</svg>
